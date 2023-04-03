@@ -197,15 +197,13 @@ fn module(
         .functions
         .into_iter()
         // TODO full prover support for vector bytecode instructions
-        // TODO filter out fake natives
-        // These cannot be filtered out due to lacking prover support for the operations
-        // .filter(|(_, fdef)| {
-        //     // TODO full evm support for vector bytecode instructions
-        //     cfg!(feature = "evm-backend")
-        //         || !fdef
-        //             .attributes
-        //             .contains_key_(&fake_natives::FAKE_NATIVE_ATTR)
-        // })
+        .filter(|(_, fdef)| {
+            // TODO full evm support for vector bytecode instructions
+            cfg!(feature = "evm-backend")
+                || !fdef
+                    .attributes
+                    .contains_key_(&fake_natives::FAKE_NATIVE_ATTR)
+        })
         .map(|(f, fdef)| {
             let (res, info) = function(&mut context, Some(&ident), f, fdef);
             collected_function_infos.add(f, info).unwrap();
